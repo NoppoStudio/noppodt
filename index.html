@@ -3,30 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>Noppo Direct Transfer</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
-        
+
         :root {
             --noppo-blue: #0066FF;
             --noppo-bg: #F0F4FF;
         }
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--noppo-bg);
             color: #0F172A;
             letter-spacing: -0.025em;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(0, 102, 255, 0.08) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 102, 255, 0.08) 0px, transparent 50%);
+
+            background-image:
+                radial-gradient(
+                    at 0% 0%,
+                    rgba(0, 102, 255, 0.08) 0px,
+                    transparent 50%
+                ),
+                radial-gradient(
+                    at 100% 100%,
+                    rgba(0, 102, 255, 0.08) 0px,
+                    transparent 50%
+                );
         }
 
-        .mono { font-family: 'JetBrains Mono', monospace; }
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
 
         header {
             background: rgba(255, 255, 255, 0.6);
@@ -42,7 +69,8 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 8px 32px rgba(0, 102, 255, 0.05);
             border-radius: 32px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition:
+                all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .n-input {
@@ -94,425 +122,2937 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #0066FF, #60A5FA);
+            background: linear-gradient(
+                90deg,
+                #0066FF,
+                #60A5FA
+            );
             width: 0%;
             transition: width 0.2s ease-out;
             border-radius: 100px;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
+        .auth-loading {
+            pointer-events: none;
+            opacity: 0.7;
         }
-        .animate-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-up {
+            animation:
+                slideUp
+                0.6s
+                cubic-bezier(0.16, 1, 0.3, 1)
+                forwards;
+        }
+
+        @media (max-width: 640px) {
+            .n-card {
+                border-radius: 26px;
+            }
+        }
     </style>
-    <meta name="google-site-verification" content="4fA5lwg6y5Vx90qENwXIcsWtT1Yygmv4Vj02SDpZyeU" />
+
+    <meta
+        name="google-site-verification"
+        content="4fA5lwg6y5Vx90qENwXIcsWtT1Yygmv4Vj02SDpZyeU"
+    />
 </head>
+
 <body class="min-h-screen flex flex-col">
+
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
 
     <header class="sticky top-0 z-[60] px-4 sm:px-8 py-4 sm:py-5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
+
             <div class="flex items-center gap-4">
-                <div class="w-11 h-11 bg-[#0066FF] rounded-2xl flex items-center justify-center text-white shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+
+                <div
+                    class="w-11 h-11 bg-[#0066FF] rounded-2xl flex items-center justify-center text-white shadow-lg"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" x2="12" y1="3" y2="15"/>
+                    </svg>
                 </div>
+
                 <div>
-                    <h1 class="text-xl font-black tracking-tighter leading-none mb-1">Noppo <span class="text-[#0066FF]">DT</span></h1>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest opacity-80">Direct Transfer</p>
+                    <h1 class="text-xl font-black tracking-tighter leading-none mb-1">
+                        Noppo <span class="text-[#0066FF]">DT</span>
+                    </h1>
+
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest opacity-80">
+                        Direct Transfer
+                    </p>
                 </div>
+
             </div>
 
             <div class="flex items-center gap-3 sm:gap-6">
+
                 <div class="hidden sm:block text-right">
-                    <p id="user-name" class="text-sm font-extrabold text-slate-800">Guest</p>
+                    <p
+                        id="user-name"
+                        class="text-sm font-extrabold text-slate-800"
+                    >
+                        Guest
+                    </p>
+
                     <div class="flex items-center justify-end gap-1.5">
-                        <div id="auth-indicator" class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                        <p id="user-status" class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Offline</p>
+
+                        <div
+                            id="auth-indicator"
+                            class="w-1.5 h-1.5 rounded-full bg-slate-300"
+                        ></div>
+
+                        <p
+                            id="user-status"
+                            class="text-[9px] font-black text-slate-400 uppercase tracking-widest"
+                        >
+                            Guest
+                        </p>
+
                     </div>
                 </div>
-                <button id="auth-btn" onclick="handleAuthAction()" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[11px] font-black hover:bg-black transition-all active:scale-95">
-                    ログイン
+
+                <button
+                    id="auth-btn"
+                    onclick="handleAuthAction()"
+                    class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[11px] font-black hover:bg-black transition-all active:scale-95"
+                >
+                    Noppo IDでログイン
                 </button>
+
             </div>
         </div>
     </header>
 
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
     <main class="max-w-5xl mx-auto w-full p-4 sm:p-8 flex-grow">
+
+        <!-- YOUR ID -->
+
         <section class="mb-10 text-center animate-up">
-            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Your ID</h3>
-            <div class="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-5 n-card w-full sm:w-auto">
-                <div id="my-peer-id" class="mono text-lg sm:text-xl font-bold text-slate-800 tracking-tight break-all">Initializing...</div>
-                <div class="flex gap-4 border-t sm:border-t-0 sm:border-l border-white/40 pt-4 sm:pt-0 sm:pl-4">
-                    <button onclick="copyId()" class="p-2 text-slate-400 hover:text-blue-600 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">
+                Your ID
+            </h3>
+
+            <div
+                class="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-5 n-card w-full sm:w-auto"
+            >
+
+                <div
+                    id="my-peer-id"
+                    class="mono text-lg sm:text-xl font-bold text-slate-800 tracking-tight break-all"
+                >
+                    Initializing...
+                </div>
+
+                <div
+                    class="flex gap-4 border-t sm:border-t-0 sm:border-l border-white/40 pt-4 sm:pt-0 sm:pl-4"
+                >
+
+                    <button
+                        onclick="copyId()"
+                        class="p-2 text-slate-400 hover:text-blue-600 transition-colors"
+                        title="Copy ID"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect width="14" height="14" x="8" y="8" rx="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
                     </button>
-                    <button onclick="showQR()" class="p-2 text-slate-400 hover:text-blue-600 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
+
+                    <button
+                        onclick="showQR()"
+                        class="p-2 text-slate-400 hover:text-blue-600 transition-colors"
+                        title="Show QR"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                            <rect width="5" height="5" x="16" y="3" rx="1"/>
+                            <rect width="5" height="5" x="3" y="16" rx="1"/>
+                            <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                            <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                        </svg>
                     </button>
+
                 </div>
             </div>
         </section>
+
+
+        <!-- CONNECTION / FILE -->
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12">
-            <div class="n-card p-6 sm:p-10 animate-up" style="animation-delay: 0.1s">
+
+            <!-- CONNECT -->
+
+            <div
+                class="n-card p-6 sm:p-10 animate-up"
+                style="animation-delay: 0.1s"
+            >
+
                 <div class="flex justify-between items-center mb-8">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Connect</h3>
-                    <div id="conn-status" class="flex items-center gap-2 bg-white/40 px-3 py-1.5 rounded-full border border-white/50">
-                        <div id="status-dot" class="w-2 h-2 rounded-full bg-slate-300"></div>
-                        <span id="status-text" class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Waiting</span>
+
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">
+                        Connect
+                    </h3>
+
+                    <div
+                        id="conn-status"
+                        class="flex items-center gap-2 bg-white/40 px-3 py-1.5 rounded-full border border-white/50"
+                    >
+                        <div
+                            id="status-dot"
+                            class="w-2 h-2 rounded-full bg-slate-300"
+                        ></div>
+
+                        <span
+                            id="status-text"
+                            class="text-[9px] font-black text-slate-400 uppercase tracking-widest"
+                        >
+                            Waiting
+                        </span>
                     </div>
+
                 </div>
+
                 <div class="space-y-5">
+
                     <div class="relative">
-                        <input type="text" id="target-id" placeholder="相手のIDを入力" class="n-input w-full px-6 py-4 text-sm outline-none">
-                        <button onclick="openScan()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h1"/><path d="M7 12h10"/><path d="M7 17h10"/><path d="M12 7h5"/></svg>
+
+                        <input
+                            type="text"
+                            id="target-id"
+                            placeholder="相手のIDを入力"
+                            autocomplete="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                            class="n-input w-full px-6 py-4 text-sm outline-none"
+                        >
+
+                        <button
+                            onclick="openScan()"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors"
+                            title="Scan QR"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                                <path d="M7 7h1"/>
+                                <path d="M7 12h10"/>
+                                <path d="M7 17h10"/>
+                                <path d="M12 7h5"/>
+                            </svg>
                         </button>
+
                     </div>
-                    <button id="conn-btn" onclick="startConnect()" class="btn-primary w-full py-4 text-xs uppercase tracking-widest hover:scale-[1.01] active:scale-[0.98]">
+
+                    <button
+                        id="conn-btn"
+                        onclick="startConnect()"
+                        class="btn-primary w-full py-4 text-xs uppercase tracking-widest hover:scale-[1.01] active:scale-[0.98]"
+                    >
                         Connect Device
                     </button>
+
                 </div>
             </div>
 
-            <div id="drop-zone" class="n-card p-3 drop-zone disabled animate-up" style="animation-delay: 0.2s">
-                <div class="bg-white/30 border border-white/60 rounded-[30px] h-full p-6 sm:p-10 flex flex-col items-center justify-center text-center gap-5">
-                    <div id="drop-icon" class="w-16 h-16 bg-white/80 rounded-2xl flex items-center justify-center text-slate-300 shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+
+            <!-- DROP ZONE -->
+
+            <div
+                id="drop-zone"
+                class="n-card p-3 drop-zone disabled animate-up"
+                style="animation-delay: 0.2s"
+            >
+
+                <div
+                    class="bg-white/30 border border-white/60 rounded-[30px] h-full p-6 sm:p-10 flex flex-col items-center justify-center text-center gap-5"
+                >
+
+                    <div
+                        id="drop-icon"
+                        class="w-16 h-16 bg-white/80 rounded-2xl flex items-center justify-center text-slate-300 shadow-sm"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="28"
+                            height="28"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" x2="12" y1="3" y2="15"/>
+                        </svg>
                     </div>
+
                     <div>
-                        <h2 id="drop-title" class="text-lg font-extrabold mb-1 tracking-tight">デバイス未接続</h2>
-                        <p id="drop-desc" class="text-slate-400 text-[10px] font-medium leading-relaxed max-w-[200px]">ファイルを送信するには先にデバイスを接続してください</p>
+
+                        <h2
+                            id="drop-title"
+                            class="text-lg font-extrabold mb-1 tracking-tight"
+                        >
+                            デバイス未接続
+                        </h2>
+
+                        <p
+                            id="drop-desc"
+                            class="text-slate-400 text-[10px] font-medium leading-relaxed max-w-[200px]"
+                        >
+                            ファイルを送信するには先にデバイスを接続してください
+                        </p>
+
                     </div>
-                    <input type="file" id="file-input" class="hidden" multiple disabled>
-                    <button id="file-btn" onclick="document.getElementById('file-input').click()" disabled class="bg-slate-300 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all cursor-not-allowed">
+
+                    <input
+                        type="file"
+                        id="file-input"
+                        class="hidden"
+                        multiple
+                        disabled
+                    >
+
+                    <button
+                        id="file-btn"
+                        onclick="document.getElementById('file-input').click()"
+                        disabled
+                        class="bg-slate-300 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all cursor-not-allowed"
+                    >
                         Select Files
                     </button>
+
                 </div>
             </div>
         </div>
 
-        <section class="animate-up" style="animation-delay: 0.3s">
+
+        <!-- TRANSFER QUEUE -->
+
+        <section
+            class="animate-up"
+            style="animation-delay: 0.3s"
+        >
+
             <div class="flex justify-between items-center mb-6 px-4">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Transfer Queue</h3>
-                <button onclick="clearLogs()" class="text-[10px] font-black text-slate-300 hover:text-blue-600 transition-colors uppercase tracking-widest">Clear All</button>
+
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                    Transfer Queue
+                </h3>
+
+                <button
+                    onclick="clearLogs()"
+                    class="text-[10px] font-black text-slate-300 hover:text-blue-600 transition-colors uppercase tracking-widest"
+                >
+                    Clear All
+                </button>
+
             </div>
-            <div id="transfer-list" class="space-y-4">
-                <div id="empty-hint" class="py-20 text-center border-2 border-dashed border-white/50 rounded-[40px] bg-white/20">
-                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">No active transfers</p>
+
+            <div
+                id="transfer-list"
+                class="space-y-4"
+            >
+
+                <div
+                    id="empty-hint"
+                    class="py-20 text-center border-2 border-dashed border-white/50 rounded-[40px] bg-white/20"
+                >
+                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
+                        No active transfers
+                    </p>
                 </div>
+
             </div>
         </section>
+
     </main>
 
+
+    <!-- FOOTER -->
+
     <footer class="p-10 text-center opacity-30">
-        <p class="text-[9px] font-black uppercase tracking-[0.5em] text-slate-500">P2P Encryption Enabled • NoppoStudio</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.5em] text-slate-500">
+            P2P Encryption Enabled • NoppoStudio
+        </p>
     </footer>
 
-    <div id="modal-qr" class="fixed inset-0 bg-slate-900/10 backdrop-blur-2xl z-[100] hidden items-center justify-center p-6" onclick="closeModal('modal-qr')">
-        <div class="bg-white/90 border border-white rounded-[48px] p-10 max-w-sm w-full shadow-2xl animate-up" onclick="event.stopPropagation()">
+
+    <!-- =========================================================
+         QR MODAL
+    ========================================================== -->
+
+    <div
+        id="modal-qr"
+        class="fixed inset-0 bg-slate-900/10 backdrop-blur-2xl z-[100] hidden items-center justify-center p-6"
+        onclick="closeModal('modal-qr')"
+    >
+
+        <div
+            class="bg-white/90 border border-white rounded-[48px] p-10 max-w-sm w-full shadow-2xl animate-up"
+            onclick="event.stopPropagation()"
+        >
+
             <div class="flex flex-col items-center text-center">
-                <h4 class="font-black text-xl mb-3 tracking-tight">Connect via QR</h4>
-                <p class="text-[11px] text-slate-400 mb-8">カメラでスキャンして瞬時にリンク</p>
-                <div id="qrcode" class="p-6 bg-white rounded-[32px] mb-8 border border-slate-100 shadow-inner"></div>
-                <button onclick="closeModal('modal-qr')" class="w-full btn-primary py-4 text-xs uppercase tracking-widest">Close</button>
+
+                <h4 class="font-black text-xl mb-3 tracking-tight">
+                    Connect via QR
+                </h4>
+
+                <p class="text-[11px] text-slate-400 mb-8">
+                    カメラでスキャンして瞬時にリンク
+                </p>
+
+                <div
+                    id="qrcode"
+                    class="p-6 bg-white rounded-[32px] mb-8 border border-slate-100 shadow-inner"
+                ></div>
+
+                <button
+                    onclick="closeModal('modal-qr')"
+                    class="w-full btn-primary py-4 text-xs uppercase tracking-widest"
+                >
+                    Close
+                </button>
+
             </div>
         </div>
     </div>
 
-    <div id="modal-scan" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100] hidden flex-col items-center justify-center p-6" onclick="closeScan()">
-        <div id="reader" class="w-full max-w-md aspect-square overflow-hidden rounded-[40px] border-2 border-white/10"></div>
-        <button onclick="closeScan()" class="mt-8 bg-white/10 text-white px-10 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/20">Cancel</button>
+
+    <!-- =========================================================
+         SCAN MODAL
+    ========================================================== -->
+
+    <div
+        id="modal-scan"
+        class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100] hidden flex-col items-center justify-center p-6"
+        onclick="closeScan()"
+    >
+
+        <div
+            id="reader"
+            class="w-full max-w-md aspect-square overflow-hidden rounded-[40px] border-2 border-white/10"
+            onclick="event.stopPropagation()"
+        ></div>
+
+        <button
+            onclick="closeScan()"
+            class="mt-8 bg-white/10 text-white px-10 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/20"
+        >
+            Cancel
+        </button>
+
     </div>
 
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
     <script>
-        const AUTH_WORKER = "https://noppo-auth.noppo5319.workers.dev";
-        const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2YXZhc3JkeGd1cWtpaWdjeGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0MTk5ODcsImV4cCI6MjA4Mjk5NTk4N30.CVq3lyRbxek7Ejs4tP5sN9-0JNEXSLtCsC2Pj-skFFQ";
-        
-        const CHUNK_SIZE = 16384 * 4; 
+
+        /* ======================================================
+           CONFIGURATION
+        ====================================================== */
+
+        const NOPPO_ID_WORKER =
+            "https://noppo-id.noppo5319.workers.dev";
+
+        const NOPPO_ID_FRONTEND =
+            "https://id-noppo.pages.dev";
+
+        /*
+         * NoppoDT自身のOAuth Redirect URI。
+         *
+         * 現在のサービスURL:
+         * https://dt-noppo.pages.dev/
+         *
+         * Noppo ID側の /oauth/register に
+         * このURIを登録しておく。
+         */
+        const REDIRECT_URI =
+            window.location.origin + window.location.pathname;
+
+        /*
+         * PeerJS
+         */
+        const CHUNK_SIZE = 16384 * 4;
+
+        const PEER_CONFIG = {
+            debug: 3,
+
+            config: {
+                iceServers: [
+                    {
+                        urls: "stun:stun.l.google.com:19302"
+                    },
+                    {
+                        urls: "stun:stun1.l.google.com:19302"
+                    },
+                    {
+                        urls: "stun:stun2.l.google.com:19302"
+                    },
+                    {
+                        urls: "stun:stun3.l.google.com:19302"
+                    }
+                ]
+            }
+        };
+
+
+        /* ======================================================
+           STATE
+        ====================================================== */
+
         let peer = null;
+
         let activeConn = null;
-        let currentUser = null;
+
+        let currentAccount = null;
+
         let receivingFiles = {};
+
         let qrScanner = null;
 
-        async function loadUser() {
-            const ticket = new URLSearchParams(window.location.search).get('ticket');
-            const cached = localStorage.getItem('noppo_user');
-            if (cached) currentUser = JSON.parse(cached);
+        let currentPeerBaseId = null;
+
+        let peerGeneration = 0;
+
+        let oauthInProgress = false;
+
+
+        /* ======================================================
+           DOM HELPERS
+        ====================================================== */
+
+        const $ = id =>
+            document.getElementById(id);
+
+
+        /* ======================================================
+           RANDOM / BASE64URL
+        ====================================================== */
+
+        function randomBytes(length = 32) {
+            const bytes = new Uint8Array(length);
+
+            crypto.getRandomValues(bytes);
+
+            return bytes;
+        }
+
+
+        function bytesToBase64Url(bytes) {
+
+            let binary = "";
+
+            const chunkSize = 0x8000;
+
+            for (
+                let i = 0;
+                i < bytes.length;
+                i += chunkSize
+            ) {
+                binary += String.fromCharCode(
+                    ...bytes.subarray(
+                        i,
+                        Math.min(
+                            i + chunkSize,
+                            bytes.length
+                        )
+                    )
+                );
+            }
+
+            return btoa(binary)
+                .replace(/\+/g, "-")
+                .replace(/\//g, "_")
+                .replace(/=+$/g, "");
+        }
+
+
+        function randomString(length = 32) {
+            return bytesToBase64Url(
+                randomBytes(length)
+            );
+        }
+
+
+        /* ======================================================
+           SHA-256
+        ====================================================== */
+
+        async function sha256Base64Url(value) {
+
+            const data =
+                new TextEncoder().encode(value);
+
+            const digest =
+                await crypto.subtle.digest(
+                    "SHA-256",
+                    data
+                );
+
+            return bytesToBase64Url(
+                new Uint8Array(digest)
+            );
+        }
+
+
+        /* ======================================================
+           PKCE
+        ====================================================== */
+
+        async function createPKCE() {
+
+            const codeVerifier =
+                randomString(64);
+
+            const codeChallenge =
+                await sha256Base64Url(
+                    codeVerifier
+                );
+
+            return {
+                codeVerifier,
+                codeChallenge
+            };
+        }
+
+
+        /* ======================================================
+           OAUTH SESSION STORAGE
+        ====================================================== */
+
+        function saveOAuthState(data) {
+
+            sessionStorage.setItem(
+                "noppo_dt_oauth",
+                JSON.stringify(data)
+            );
+        }
+
+
+        function getOAuthState() {
+
+            const raw =
+                sessionStorage.getItem(
+                    "noppo_dt_oauth"
+                );
+
+            if (!raw) return null;
 
             try {
-                const url = ticket ? `${AUTH_WORKER}/auth/v1/user?ticket=${ticket}` : `${AUTH_WORKER}/auth/v1/user`;
-                const res = await fetch(url, { headers: { "apikey": API_KEY } });
-                if (res.ok) {
-                    currentUser = await res.json();
-                    localStorage.setItem('noppo_user', JSON.stringify(currentUser));
-                    if (ticket) history.replaceState({}, "", window.location.origin + window.location.pathname);
+                return JSON.parse(raw);
+            } catch {
+                return null;
+            }
+        }
+
+
+        function clearOAuthState() {
+
+            sessionStorage.removeItem(
+                "noppo_dt_oauth"
+            );
+        }
+
+
+        /* ======================================================
+           NOPPO ID OAUTH
+        ====================================================== */
+
+        async function registerOAuthClient() {
+
+            const response =
+                await fetch(
+                    `${NOPPO_ID_WORKER}/oauth/register`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            clientName: "Noppo DT",
+
+                            redirectUris: [
+                                REDIRECT_URI
+                            ]
+                        })
+                    }
+                );
+
+            let data = null;
+
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error(
+                    "Noppo IDのサービス登録応答を読み取れませんでした。"
+                );
+            }
+
+            if (!response.ok || data.ok === false) {
+
+                throw new Error(
+                    data.error ||
+                    "Noppo IDへのサービス登録に失敗しました。"
+                );
+            }
+
+            return data;
+        }
+
+
+        async function startNoppoIDLogin() {
+
+            if (oauthInProgress) return;
+
+            oauthInProgress = true;
+
+            const button = $("auth-btn");
+
+            button.classList.add("auth-loading");
+
+            button.disabled = true;
+
+            button.innerText = "接続中...";
+
+            try {
+
+                /*
+                 * OAuth Client登録。
+                 *
+                 * /oauth/register は冪等なので、
+                 * 毎回呼び出しても既存登録なら
+                 * alreadyRegistered=true になる。
+                 */
+                await registerOAuthClient();
+
+
+                const state =
+                    randomString(32);
+
+                const {
+                    codeVerifier,
+                    codeChallenge
+                } = await createPKCE();
+
+
+                saveOAuthState({
+                    state,
+                    codeVerifier,
+                    createdAt: Date.now()
+                });
+
+
+                const response =
+                    await fetch(
+                        `${NOPPO_ID_WORKER}/authorize/start`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                redirectUri:
+                                    REDIRECT_URI,
+
+                                state,
+
+                                codeChallenge,
+
+                                codeChallengeMethod:
+                                    "S256"
+                            })
+                        }
+                    );
+
+
+                let data = null;
+
+                try {
+                    data = await response.json();
+                } catch {
+                    throw new Error(
+                        "Noppo IDの認証開始応答を読み取れませんでした。"
+                    );
                 }
-            } catch (e) {}
 
-            const name = currentUser ? (currentUser.user_metadata?.display_name || currentUser.email.split('@')[0]) : null;
-            updateUserUI(name || "Guest", !!currentUser);
-            setupPeer(name);
+
+                if (
+                    !response.ok ||
+                    data.ok === false
+                ) {
+
+                    throw new Error(
+                        data.error ||
+                        "Noppo IDの認証開始に失敗しました。"
+                    );
+                }
+
+
+                if (
+                    !data.authorizationSessionId
+                ) {
+
+                    throw new Error(
+                        "authorizationSessionIdが返されませんでした。"
+                    );
+                }
+
+
+                /*
+                 * Noppo ID Frontendへ移動。
+                 *
+                 * Noppo ID側は
+                 * authorizationSessionIdを使って
+                 * /auth/options → WebAuthn → /auth/verify
+                 * を実行する。
+                 */
+                const url =
+                    new URL(
+                        NOPPO_ID_FRONTEND
+                    );
+
+                url.searchParams.set(
+                    "authorizationSessionId",
+                    data.authorizationSessionId
+                );
+
+                window.location.href =
+                    url.toString();
+
+            } catch (error) {
+
+                console.error(
+                    "Noppo ID OAuth Error:",
+                    error
+                );
+
+                clearOAuthState();
+
+                oauthInProgress = false;
+
+                button.classList.remove(
+                    "auth-loading"
+                );
+
+                button.disabled = false;
+
+                button.innerText =
+                    "Noppo IDでログイン";
+
+                alert(
+                    error?.message ||
+                    "Noppo IDへの接続に失敗しました。"
+                );
+            }
         }
 
-        function updateUserUI(name, loggedIn) {
-            document.getElementById('user-name').innerText = name;
-            document.getElementById('user-status').innerText = loggedIn ? 'Authorized' : 'Offline';
-            document.getElementById('auth-btn').innerText = loggedIn ? 'ログアウト' : 'ログイン';
-            document.getElementById('auth-indicator').className = `w-1.5 h-1.5 rounded-full ${loggedIn ? 'bg-blue-500' : 'bg-slate-300'}`;
+
+        /* ======================================================
+           OAUTH CALLBACK
+        ====================================================== */
+
+        async function handleOAuthCallback() {
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            const code =
+                params.get("code");
+
+            const returnedState =
+                params.get("state");
+
+            /*
+             * code/stateがなければ通常アクセス。
+             */
+            if (!code && !returnedState) {
+                return false;
+            }
+
+
+            if (!code || !returnedState) {
+
+                clearOAuthState();
+
+                cleanupOAuthURL();
+
+                throw new Error(
+                    "OAuth callbackが不完全です。"
+                );
+            }
+
+
+            const oauthState =
+                getOAuthState();
+
+            if (!oauthState) {
+
+                cleanupOAuthURL();
+
+                throw new Error(
+                    "OAuth認証情報が見つかりません。"
+                );
+            }
+
+
+            /*
+             * state検証
+             */
+            if (
+                returnedState !==
+                oauthState.state
+            ) {
+
+                clearOAuthState();
+
+                cleanupOAuthURL();
+
+                throw new Error(
+                    "OAuth stateの検証に失敗しました。"
+                );
+            }
+
+
+            /*
+             * codeVerifier存在確認
+             */
+            if (!oauthState.codeVerifier) {
+
+                clearOAuthState();
+
+                cleanupOAuthURL();
+
+                throw new Error(
+                    "PKCE codeVerifierが見つかりません。"
+                );
+            }
+
+
+            const response =
+                await fetch(
+                    `${NOPPO_ID_WORKER}/token`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            redirectUri:
+                                REDIRECT_URI,
+
+                            code,
+
+                            codeVerifier:
+                                oauthState.codeVerifier
+                        })
+                    }
+                );
+
+
+            let data = null;
+
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error(
+                    "Noppo ID Token応答を読み取れませんでした。"
+                );
+            }
+
+
+            /*
+             * Token交換後は必ず
+             * 一時OAuth情報を削除。
+             */
+            clearOAuthState();
+
+            cleanupOAuthURL();
+
+
+            if (
+                !response.ok ||
+                data.ok === false
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "Noppo IDの認証に失敗しました。"
+                );
+            }
+
+
+            if (
+                !data.account ||
+                !data.account.id ||
+                !data.account.username
+            ) {
+
+                throw new Error(
+                    "Noppo IDから有効なAccount情報を取得できませんでした。"
+                );
+            }
+
+
+            currentAccount = {
+                id: data.account.id,
+                username: data.account.username
+            };
+
+
+            sessionStorage.setItem(
+                "noppo_dt_account",
+                JSON.stringify(
+                    currentAccount
+                )
+            );
+
+
+            updateUserUI(
+                currentAccount.username,
+                true
+            );
+
+
+            /*
+             * 認証済みユーザー用Peerを作成。
+             */
+            await setupPeer(
+                currentAccount.username
+            );
+
+
+            return true;
         }
+
+
+        function cleanupOAuthURL() {
+
+            const cleanURL =
+                window.location.origin +
+                window.location.pathname;
+
+            window.history.replaceState(
+                {},
+                document.title,
+                cleanURL
+            );
+        }
+
+
+        /* ======================================================
+           RESTORE CURRENT TAB SESSION
+        ====================================================== */
+
+        function restoreSession() {
+
+            const raw =
+                sessionStorage.getItem(
+                    "noppo_dt_account"
+                );
+
+            if (!raw) return null;
+
+            try {
+
+                const account =
+                    JSON.parse(raw);
+
+                if (
+                    account &&
+                    account.id &&
+                    account.username
+                ) {
+                    return account;
+                }
+
+            } catch {
+                // ignore
+            }
+
+            return null;
+        }
+
+
+        /* ======================================================
+           USER UI
+        ====================================================== */
+
+        function updateUserUI(
+            name,
+            loggedIn
+        ) {
+
+            $("user-name").innerText =
+                name || "Guest";
+
+            $("user-status").innerText =
+                loggedIn
+                    ? "Noppo ID"
+                    : "Guest";
+
+            $("auth-btn").innerText =
+                loggedIn
+                    ? "ログアウト"
+                    : "Noppo IDでログイン";
+
+            $("auth-indicator").className =
+                `w-1.5 h-1.5 rounded-full ${
+                    loggedIn
+                        ? "bg-blue-500"
+                        : "bg-slate-300"
+                }`;
+        }
+
+
+        /* ======================================================
+           LOGIN / LOGOUT
+        ====================================================== */
 
         function handleAuthAction() {
-            if (currentUser) {
-                localStorage.removeItem('noppo_user');
-                window.location.href = `${AUTH_WORKER}/logout?redirect=${encodeURIComponent(window.location.href)}`;
+
+            if (currentAccount) {
+
+                logoutNoppoID();
+
             } else {
-                window.location.href = `${AUTH_WORKER}?redirect=${encodeURIComponent(window.location.href)}`;
+
+                startNoppoIDLogin();
+
             }
         }
 
-        function setupPeer(name, suffix = "") {
-            const id = name ? `noppo-${name}${suffix}`.toLowerCase().replace(/[^a-z0-9-]/g, '') : null;
-            if (peer) peer.destroy();
-            
-            // debug: 3 でコンソールに詳細ログを出力
-            peer = new Peer(id, {
-                debug: 3,
-                config: { 
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' }, 
-                        { urls: 'stun:stun1.l.google.com:19302' },
-                        { urls: 'stun:stun2.l.google.com:19302' },
-                        { urls: 'stun:stun3.l.google.com:19302' }
-                    ] 
-                }
-            });
 
-            peer.on('open', id => {
-                document.getElementById('my-peer-id').innerText = id;
-                generateQR(id);
-                updateConnStatus("Ready", false);
-                console.log('Peer ID is: ' + id);
-            });
+        async function logoutNoppoID() {
 
-            peer.on('connection', conn => {
-                console.log('Incoming connection from: ' + conn.peer);
-                activeConn = conn;
-                handleConnection(conn);
-            });
+            currentAccount = null;
 
-            peer.on('error', err => {
-                console.error('PeerJS Error Type:', err.type);
-                console.error('Full Error Object:', err);
-                
-                if (err.type === 'unavailable-id') {
-                    setupPeer(name, "-" + Math.floor(Math.random() * 9000));
-                }
-                if (err.type === 'peer-unavailable') {
-                    alert('相手のデバイスが見つかりません。IDが正しいか確認してください。');
-                    updateConnStatus("Not Found", false);
-                }
-                if (err.type === 'network') {
-                    alert('ネットワークに問題があるか、Firewallにブロックされています。');
-                }
-            });
+            sessionStorage.removeItem(
+                "noppo_dt_account"
+            );
+
+            /*
+             * 現在のPeerを破棄。
+             */
+            if (peer) {
+
+                try {
+                    peer.destroy();
+                } catch {}
+
+                peer = null;
+            }
+
+            activeConn = null;
+
+            currentPeerBaseId = null;
+
+            updateUserUI(
+                "Guest",
+                false
+            );
+
+            updateConnStatus(
+                "Initializing",
+                false
+            );
+
+            enableTransferUI(false);
+
+            /*
+             * Guest用ランダムPeer IDを生成。
+             */
+            await setupPeer(null);
         }
+
+
+        /* ======================================================
+           PEER ID
+        ====================================================== */
+
+        function sanitizeUsername(username) {
+
+            /*
+             * PeerJS IDとして安全なASCIIへ。
+             *
+             * Noppo ID usernameが日本語などの場合、
+             * そのままでは現在のPeer IDルールに
+             * 合わない可能性があるため、
+             * ASCII部分だけを利用する。
+             */
+            return String(username || "")
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9-]/g, "")
+                .replace(/^-+|-+$/g, "")
+                .slice(0, 48);
+        }
+
+
+        function makeBasePeerId(username) {
+
+            const safe =
+                sanitizeUsername(username);
+
+            if (!safe) {
+
+                return null;
+            }
+
+            return `noppo-${safe}`;
+        }
+
+
+        function createGuestPeerId() {
+
+            return null;
+        }
+
+
+        /* ======================================================
+           PEER SETUP
+        ====================================================== */
+
+        async function setupPeer(
+            username,
+            suffix = ""
+        ) {
+
+            const generation =
+                ++peerGeneration;
+
+
+            /*
+             * 古いPeerを破棄。
+             */
+            if (peer) {
+
+                try {
+                    peer.destroy();
+                } catch {}
+
+                peer = null;
+            }
+
+
+            /*
+             * 現在接続中のConnectionも破棄。
+             */
+            if (activeConn) {
+
+                try {
+                    activeConn.close();
+                } catch {}
+
+                activeConn = null;
+            }
+
+
+            currentPeerBaseId =
+                makeBasePeerId(username);
+
+
+            let requestedId =
+                currentPeerBaseId;
+
+            if (requestedId) {
+
+                requestedId += suffix;
+            }
+
+
+            updateConnStatus(
+                "Initializing",
+                false
+            );
+
+
+            $("my-peer-id").innerText =
+                "Initializing...";
+
+
+            /*
+             * Guestの場合、
+             * PeerJSにnullを渡してランダムIDを生成。
+             */
+            peer =
+                new Peer(
+                    requestedId,
+                    PEER_CONFIG
+                );
+
+
+            /*
+             * PeerJS OPEN
+             */
+            peer.on(
+                "open",
+                id => {
+
+                    if (
+                        generation !==
+                        peerGeneration
+                    ) {
+                        return;
+                    }
+
+
+                    $("my-peer-id").innerText =
+                        id;
+
+                    generateQR(id);
+
+                    updateConnStatus(
+                        "Ready",
+                        false
+                    );
+
+                    console.log(
+                        "Peer ID:",
+                        id
+                    );
+
+                    console.log(
+                        "Peer Mode:",
+                        currentPeerBaseId
+                            ? "Noppo ID"
+                            : "Guest"
+                    );
+                }
+            );
+
+
+            /*
+             * Incoming connection
+             */
+            peer.on(
+                "connection",
+                conn => {
+
+                    if (
+                        generation !==
+                        peerGeneration
+                    ) {
+
+                        try {
+                            conn.close();
+                        } catch {}
+
+                        return;
+                    }
+
+                    console.log(
+                        "Incoming connection from:",
+                        conn.peer
+                    );
+
+                    /*
+                     * 既存接続があれば閉じる。
+                     */
+                    if (
+                        activeConn &&
+                        activeConn.open
+                    ) {
+
+                        try {
+                            activeConn.close();
+                        } catch {}
+                    }
+
+                    activeConn = conn;
+
+                    handleConnection(
+                        conn
+                    );
+                }
+            );
+
+
+            /*
+             * PeerJS error
+             */
+            peer.on(
+                "error",
+                err => {
+
+                    if (
+                        generation !==
+                        peerGeneration
+                    ) {
+                        return;
+                    }
+
+
+                    console.error(
+                        "PeerJS Error Type:",
+                        err.type
+                    );
+
+                    console.error(
+                        "Full Error Object:",
+                        err
+                    );
+
+
+                    /*
+                     * ID衝突。
+                     *
+                     * Noppo IDユーザーなら
+                     * noppo-username-XXXX
+                     */
+                    if (
+                        err.type ===
+                        "unavailable-id"
+                    ) {
+
+                        if (
+                            currentPeerBaseId
+                        ) {
+
+                            const randomSuffix =
+                                "-" +
+                                Math.floor(
+                                    Math.random() *
+                                    9000
+                                ) +
+                                1000;
+
+                            setupPeer(
+                                username,
+                                randomSuffix
+                            );
+
+                        } else {
+
+                            /*
+                             * Guestでこのエラーが出ることは
+                             * 基本的にはないが、
+                             * 念のため再生成。
+                             */
+                            setupPeer(
+                                null
+                            );
+                        }
+
+                        return;
+                    }
+
+
+                    if (
+                        err.type ===
+                        "peer-unavailable"
+                    ) {
+
+                        alert(
+                            "相手のデバイスが見つかりません。IDが正しいか確認してください。"
+                        );
+
+                        updateConnStatus(
+                            "Not Found",
+                            false
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        err.type ===
+                        "network"
+                    ) {
+
+                        alert(
+                            "ネットワークに問題があるか、Firewallにブロックされています。"
+                        );
+
+                        updateConnStatus(
+                            "Network Error",
+                            false
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        err.type ===
+                        "server-error"
+                    ) {
+
+                        updateConnStatus(
+                            "Server Error",
+                            false
+                        );
+
+                        return;
+                    }
+                }
+            );
+
+
+            peer.on(
+                "disconnected",
+                () => {
+
+                    if (
+                        generation !==
+                        peerGeneration
+                    ) {
+                        return;
+                    }
+
+                    console.warn(
+                        "PeerJS disconnected from signaling server."
+                    );
+
+                    updateConnStatus(
+                        "Reconnecting",
+                        false
+                    );
+
+                    /*
+                     * PeerJS自身のreconnect。
+                     */
+                    try {
+                        peer.reconnect();
+                    } catch {}
+                }
+            );
+        }
+
+
+        /* ======================================================
+           CONNECT
+        ====================================================== */
 
         function startConnect() {
-            const tid = document.getElementById('target-id').value.trim();
-            if (!tid || !peer || !peer.open) return;
-            
-            console.log('Attempting to connect to: ' + tid);
-            updateConnStatus("Connecting", true);
-            const conn = peer.connect(tid, { reliable: true });
+
+            const target =
+                $("target-id")
+                    .value
+                    .trim();
+
+
+            if (!target) {
+
+                alert(
+                    "相手のIDを入力してください。"
+                );
+
+                return;
+            }
+
+
+            if (
+                !peer ||
+                !peer.open
+            ) {
+
+                alert(
+                    "Peerの初期化が完了していません。"
+                );
+
+                return;
+            }
+
+
+            /*
+             * 自分自身への接続防止。
+             */
+            if (
+                target ===
+                $("my-peer-id").innerText
+            ) {
+
+                alert(
+                    "自分自身のIDには接続できません。"
+                );
+
+                return;
+            }
+
+
+            /*
+             * 既存接続を閉じる。
+             */
+            if (
+                activeConn &&
+                activeConn.open
+            ) {
+
+                try {
+                    activeConn.close();
+                } catch {}
+            }
+
+
+            console.log(
+                "Attempting to connect to:",
+                target
+            );
+
+
+            updateConnStatus(
+                "Connecting",
+                true
+            );
+
+
+            const conn =
+                peer.connect(
+                    target,
+                    {
+                        reliable: true
+                    }
+                );
+
+
             activeConn = conn;
-            handleConnection(conn);
+
+            handleConnection(
+                conn
+            );
         }
+
+
+        /* ======================================================
+           CONNECTION HANDLER
+        ====================================================== */
 
         function handleConnection(conn) {
-            conn.on('open', () => {
-                console.log('Connection established with: ' + conn.peer);
-                updateConnStatus(`Linked`, true);
-                enableTransferUI(true);
-            });
 
-            conn.on('data', data => {
-                if (data.type === 'file-start') {
-                    receivingFiles[data.fileId] = { chunks: [], total: data.totalChunks, received: 0, name: data.name, mime: data.mime };
-                    addProgressUI(data.fileId, data.name, 'receiving');
-                } else if (data.type === 'file-chunk') {
-                    const info = receivingFiles[data.fileId];
-                    if (!info) return;
-                    info.chunks[data.index] = data.chunk;
-                    info.received++;
-                    
-                    if (info.received % 5 === 0 || info.received === info.total) {
-                        const pct = Math.floor((info.received / info.total) * 100);
-                        updateProgressUI(data.fileId, pct, `${pct}%`);
-                    }
-                    if (info.received === info.total) finalizeDownload(data.fileId);
+            conn.on(
+                "open",
+                () => {
+
+                    console.log(
+                        "Connection established with:",
+                        conn.peer
+                    );
+
+                    updateConnStatus(
+                        "Linked",
+                        true
+                    );
+
+                    enableTransferUI(
+                        true
+                    );
                 }
-            });
+            );
 
-            conn.on('close', () => {
-                console.log('Connection closed');
-                updateConnStatus("Disconnected", false);
-                enableTransferUI(false);
-                activeConn = null;
-            });
-            
-            conn.on('error', err => {
-                console.error('Connection Error:', err);
-                updateConnStatus("Error", false);
-            });
+
+            conn.on(
+                "data",
+                data => {
+
+                    if (
+                        !data ||
+                        typeof data !==
+                        "object"
+                    ) {
+                        return;
+                    }
+
+
+                    /*
+                     * FILE START
+                     */
+                    if (
+                        data.type ===
+                        "file-start"
+                    ) {
+
+                        receivingFiles[
+                            data.fileId
+                        ] = {
+
+                            chunks: [],
+
+                            total:
+                                data.totalChunks,
+
+                            received: 0,
+
+                            name:
+                                data.name,
+
+                            mime:
+                                data.mime ||
+                                "application/octet-stream"
+                        };
+
+
+                        addProgressUI(
+                            data.fileId,
+                            data.name,
+                            "receiving"
+                        );
+
+                        return;
+                    }
+
+
+                    /*
+                     * FILE CHUNK
+                     */
+                    if (
+                        data.type ===
+                        "file-chunk"
+                    ) {
+
+                        const info =
+                            receivingFiles[
+                                data.fileId
+                            ];
+
+
+                        if (!info) {
+                            return;
+                        }
+
+
+                        info.chunks[
+                            data.index
+                        ] = data.chunk;
+
+
+                        info.received++;
+
+
+                        if (
+                            info.received % 5 === 0 ||
+                            info.received ===
+                            info.total
+                        ) {
+
+                            const pct =
+                                Math.floor(
+                                    (
+                                        info.received /
+                                        info.total
+                                    ) * 100
+                                );
+
+
+                            updateProgressUI(
+                                data.fileId,
+                                pct,
+                                `${pct}%`
+                            );
+                        }
+
+
+                        if (
+                            info.received ===
+                            info.total
+                        ) {
+
+                            finalizeDownload(
+                                data.fileId
+                            );
+                        }
+                    }
+                }
+            );
+
+
+            conn.on(
+                "close",
+                () => {
+
+                    console.log(
+                        "Connection closed"
+                    );
+
+                    updateConnStatus(
+                        "Disconnected",
+                        false
+                    );
+
+                    enableTransferUI(
+                        false
+                    );
+
+                    if (
+                        activeConn ===
+                        conn
+                    ) {
+
+                        activeConn =
+                            null;
+                    }
+                }
+            );
+
+
+            conn.on(
+                "error",
+                err => {
+
+                    console.error(
+                        "Connection Error:",
+                        err
+                    );
+
+                    updateConnStatus(
+                        "Error",
+                        false
+                    );
+
+                    enableTransferUI(
+                        false
+                    );
+                }
+            );
         }
 
-        function enableTransferUI(enabled) {
-            const dz = document.getElementById('drop-zone');
-            const input = document.getElementById('file-input');
-            const btn = document.getElementById('file-btn');
-            const title = document.getElementById('drop-title');
-            const desc = document.getElementById('drop-desc');
-            const icon = document.getElementById('drop-icon');
+
+        /* ======================================================
+           TRANSFER UI
+        ====================================================== */
+
+        function enableTransferUI(
+            enabled
+        ) {
+
+            const dz =
+                $("drop-zone");
+
+            const input =
+                $("file-input");
+
+            const btn =
+                $("file-btn");
+
+            const title =
+                $("drop-title");
+
+            const desc =
+                $("drop-desc");
+
+            const icon =
+                $("drop-icon");
+
 
             if (enabled) {
-                dz.classList.remove('disabled');
-                input.disabled = false;
-                btn.disabled = false;
-                btn.className = "bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all active:scale-95 shadow-lg";
-                title.innerText = "Drop & Send";
-                desc.innerText = "ファイルをここにドロップして送信";
-                icon.className = "w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-500 shadow-sm";
+
+                dz.classList.remove(
+                    "disabled"
+                );
+
+                input.disabled =
+                    false;
+
+                btn.disabled =
+                    false;
+
+                btn.className =
+                    "bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all active:scale-95 shadow-lg";
+
+                title.innerText =
+                    "Drop & Send";
+
+                desc.innerText =
+                    "ファイルをここにドロップして送信";
+
+                icon.className =
+                    "w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-500 shadow-sm";
+
             } else {
-                dz.classList.add('disabled');
-                input.disabled = true;
-                btn.disabled = true;
-                btn.className = "bg-slate-300 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest cursor-not-allowed";
-                title.innerText = "デバイス未接続";
-                desc.innerText = "ファイルを送信するには先にデバイスを接続してください";
-                icon.className = "w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-slate-200 shadow-sm";
+
+                dz.classList.add(
+                    "disabled"
+                );
+
+                input.disabled =
+                    true;
+
+                btn.disabled =
+                    true;
+
+                btn.className =
+                    "bg-slate-300 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest cursor-not-allowed";
+
+                title.innerText =
+                    "デバイス未接続";
+
+                desc.innerText =
+                    "ファイルを送信するには先にデバイスを接続してください";
+
+                icon.className =
+                    "w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-slate-200 shadow-sm";
             }
         }
+
+
+        /* ======================================================
+           FILE SENDING
+        ====================================================== */
 
         async function sendFiles(files) {
-            if (!activeConn || !activeConn.open) return;
-            for (const file of files) {
-                const fileId = 'f' + Math.random().toString(36).substr(2, 9);
-                const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-                addProgressUI(fileId, file.name, 'sending');
-                activeConn.send({ type: 'file-start', fileId, name: file.name, mime: file.type, totalChunks });
 
-                for (let i = 0; i < totalChunks; i++) {
-                    // バッファがいっぱいなら待機（バックプレッシャー制御）
-                    if (activeConn.bufferSize > CHUNK_SIZE * 20) {
-                        await new Promise(r => setTimeout(r, 50));
-                        i--; // 同じチャンクを再送試行
-                        continue;
+            if (
+                !files ||
+                !files.length
+            ) {
+                return;
+            }
+
+
+            if (
+                !activeConn ||
+                !activeConn.open
+            ) {
+
+                alert(
+                    "デバイスが接続されていません。"
+                );
+
+                return;
+            }
+
+
+            for (
+                const file of files
+            ) {
+
+                if (
+                    !activeConn ||
+                    !activeConn.open
+                ) {
+
+                    break;
+                }
+
+
+                const fileId =
+                    "f" +
+                    randomString(9);
+
+
+                const totalChunks =
+                    Math.ceil(
+                        file.size /
+                        CHUNK_SIZE
+                    );
+
+
+                addProgressUI(
+                    fileId,
+                    file.name,
+                    "sending"
+                );
+
+
+                /*
+                 * Zero-byte fileの場合、
+                 * totalChunksが0になるため
+                 * 1つの空チャンクとして送る。
+                 */
+                const actualTotalChunks =
+                    Math.max(
+                        1,
+                        totalChunks
+                    );
+
+
+                activeConn.send({
+
+                    type:
+                        "file-start",
+
+                    fileId,
+
+                    name:
+                        file.name,
+
+                    mime:
+                        file.type ||
+                        "application/octet-stream",
+
+                    totalChunks:
+                        actualTotalChunks
+                });
+
+
+                /*
+                 * 空ファイル
+                 */
+                if (
+                    file.size === 0
+                ) {
+
+                    activeConn.send({
+
+                        type:
+                            "file-chunk",
+
+                        fileId,
+
+                        index: 0,
+
+                        chunk:
+                            new ArrayBuffer(0)
+                    });
+
+                    updateProgressUI(
+                        fileId,
+                        100,
+                        "Done"
+                    );
+
+                    continue;
+                }
+
+
+                for (
+                    let i = 0;
+                    i < totalChunks;
+                    i++
+                ) {
+
+                    /*
+                     * Backpressure制御。
+                     */
+                    while (
+                        activeConn &&
+                        activeConn.open &&
+                        activeConn.bufferSize >
+                        CHUNK_SIZE * 20
+                    ) {
+
+                        await new Promise(
+                            resolve =>
+                                setTimeout(
+                                    resolve,
+                                    50
+                                )
+                        );
                     }
 
-                    const chunk = await file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE).arrayBuffer();
-                    activeConn.send({ type: 'file-chunk', fileId, index: i, chunk });
-                    
-                    if (i % 10 === 0 || i === totalChunks - 1) {
-                        const pct = Math.floor(((i + 1) / totalChunks) * 100);
-                        updateProgressUI(fileId, pct, `${pct}%`);
+
+                    if (
+                        !activeConn ||
+                        !activeConn.open
+                    ) {
+
+                        break;
+                    }
+
+
+                    const chunk =
+                        await file
+                            .slice(
+                                i * CHUNK_SIZE,
+                                (i + 1) *
+                                    CHUNK_SIZE
+                            )
+                            .arrayBuffer();
+
+
+                    activeConn.send({
+
+                        type:
+                            "file-chunk",
+
+                        fileId,
+
+                        index: i,
+
+                        chunk
+                    });
+
+
+                    if (
+                        i % 10 === 0 ||
+                        i ===
+                        totalChunks - 1
+                    ) {
+
+                        const pct =
+                            Math.floor(
+                                (
+                                    (i + 1) /
+                                    totalChunks
+                                ) * 100
+                            );
+
+
+                        updateProgressUI(
+                            fileId,
+                            pct,
+                            `${pct}%`
+                        );
                     }
                 }
-                updateProgressUI(fileId, 100, "Done");
+
+
+                if (
+                    activeConn &&
+                    activeConn.open
+                ) {
+
+                    updateProgressUI(
+                        fileId,
+                        100,
+                        "Done"
+                    );
+                }
+            }
+
+
+            /*
+             * 同じファイルを再度選択できるようにする。
+             */
+            $("file-input").value = "";
+        }
+
+
+        /* ======================================================
+           DOWNLOAD
+        ====================================================== */
+
+        function finalizeDownload(
+            fileId
+        ) {
+
+            const info =
+                receivingFiles[fileId];
+
+
+            if (!info) {
+                return;
+            }
+
+
+            try {
+
+                const blob =
+                    new Blob(
+                        info.chunks,
+                        {
+                            type:
+                                info.mime
+                        }
+                    );
+
+
+                const url =
+                    URL.createObjectURL(
+                        blob
+                    );
+
+
+                const a =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                a.href =
+                    url;
+
+                a.download =
+                    info.name;
+
+
+                document.body.appendChild(
+                    a
+                );
+
+                a.click();
+
+                a.remove();
+
+
+                setTimeout(
+                    () => {
+                        URL.revokeObjectURL(
+                            url
+                        );
+                    },
+                    10000
+                );
+
+
+                updateProgressUI(
+                    fileId,
+                    100,
+                    "Saved"
+                );
+
+
+                delete receivingFiles[
+                    fileId
+                ];
+
+            } catch (error) {
+
+                console.error(
+                    "Download error:",
+                    error
+                );
+
+                updateProgressUI(
+                    fileId,
+                    100,
+                    "Error"
+                );
+
+                alert(
+                    "ファイルの保存に失敗しました。"
+                );
             }
         }
 
-        function finalizeDownload(fileId) {
-            const info = receivingFiles[fileId];
-            const blob = new Blob(info.chunks, { type: info.mime });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = info.name;
-            a.click();
-            updateProgressUI(fileId, 100, "Saved");
-            delete receivingFiles[fileId];
+
+        /* ======================================================
+           CONNECTION STATUS
+        ====================================================== */
+
+        function updateConnStatus(
+            text,
+            active
+        ) {
+
+            $("status-text").innerText =
+                text;
+
+            $("status-dot").className =
+                `w-2 h-2 rounded-full ${
+                    active
+                        ? "bg-blue-500 animate-pulse"
+                        : "bg-slate-300"
+                }`;
         }
 
-        function updateConnStatus(text, active) {
-            document.getElementById('status-text').innerText = text;
-            document.getElementById('status-dot').className = `w-2 h-2 rounded-full ${active ? 'bg-blue-500 animate-pulse' : 'bg-slate-300'}`;
-        }
 
-        function addProgressUI(id, name, mode) {
-            const hint = document.getElementById('empty-hint');
-            if (hint) hint.remove();
+        /* ======================================================
+           TRANSFER UI
+        ====================================================== */
+
+        function addProgressUI(
+            id,
+            name,
+            mode
+        ) {
+
+            const hint =
+                $("empty-hint");
+
+
+            if (hint) {
+                hint.remove();
+            }
+
+
+            /*
+             * ファイル名はHTMLへ直接挿入せず、
+             * escapeHTMLしてXSSを防ぐ。
+             */
+            const safeName =
+                escapeHTML(name);
+
+
+            const isSending =
+                mode === "sending";
+
+
             const html = `
-                <div id="${id}" class="n-card p-6 animate-up">
+                <div
+                    id="${escapeHTML(id)}"
+                    class="n-card p-6 animate-up"
+                >
+
                     <div class="flex justify-between items-center mb-4">
+
                         <div class="flex items-center gap-4 overflow-hidden">
-                            <div class="w-10 h-10 shrink-0 rounded-xl ${mode === 'sending' ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'} flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="${mode === 'sending' ? 'm5 12 7-7 7 7M12 19V5' : 'm19 12-7 7-7-7M12 5v14'}"/></svg>
+
+                            <div
+                                class="w-10 h-10 shrink-0 rounded-xl ${
+                                    isSending
+                                        ? "bg-blue-50 text-blue-500"
+                                        : "bg-emerald-50 text-emerald-500"
+                                } flex items-center justify-center"
+                            >
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    ${
+                                        isSending
+                                            ? '<path d="m5 12 7-7 7 7M12 19V5"/>'
+                                            : '<path d="m19 12-7 7-7-7M12 5v14"/>'
+                                    }
+                                </svg>
+
                             </div>
+
                             <div class="min-w-0">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${mode === 'sending' ? 'Sending' : 'Receiving'}</p>
-                                <p class="text-xs font-bold text-slate-700 truncate">${name}</p>
+
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                    ${
+                                        isSending
+                                            ? "Sending"
+                                            : "Receiving"
+                                    }
+                                </p>
+
+                                <p class="text-xs font-bold text-slate-700 truncate">
+                                    ${safeName}
+                                </p>
+
                             </div>
+
                         </div>
-                        <span id="${id}-stat" class="shrink-0 text-[9px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">Wait</span>
+
+                        <span
+                            id="${escapeHTML(id)}-stat"
+                            class="shrink-0 text-[9px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg"
+                        >
+                            Wait
+                        </span>
+
                     </div>
-                    <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden"><div id="${id}-bar" class="progress-fill"></div></div>
-                </div>`;
-            document.getElementById('transfer-list').insertAdjacentHTML('afterbegin', html);
+
+                    <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                            id="${escapeHTML(id)}-bar"
+                            class="progress-fill"
+                        ></div>
+                    </div>
+
+                </div>
+            `;
+
+
+            $("transfer-list")
+                .insertAdjacentHTML(
+                    "afterbegin",
+                    html
+                );
         }
 
-        function updateProgressUI(id, pct, text) {
-            const bar = document.getElementById(`${id}-bar`);
-            const stat = document.getElementById(`${id}-stat`);
-            if (bar) bar.style.width = pct + '%';
-            if (stat) stat.innerText = text;
+
+        function escapeHTML(value) {
+
+            return String(value ?? "")
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
         }
+
+
+        function updateProgressUI(
+            id,
+            pct,
+            text
+        ) {
+
+            const safeId =
+                String(id);
+
+
+            const bar =
+                document.getElementById(
+                    `${safeId}-bar`
+                );
+
+
+            const stat =
+                document.getElementById(
+                    `${safeId}-stat`
+                );
+
+
+            if (bar) {
+
+                bar.style.width =
+                    `${Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            pct
+                        )
+                    )}%`;
+            }
+
+
+            if (stat) {
+                stat.innerText =
+                    text;
+            }
+        }
+
+
+        /* ======================================================
+           QR
+        ====================================================== */
 
         function generateQR(text) {
-            const el = document.getElementById("qrcode");
+
+            const el =
+                $("qrcode");
+
+
             el.innerHTML = "";
-            new QRCode(el, { text, width: 200, height: 200, colorDark: "#0f172a", correctLevel: QRCode.CorrectLevel.M });
+
+
+            if (!text) {
+                return;
+            }
+
+
+            new QRCode(
+                el,
+                {
+                    text,
+
+                    width: 200,
+
+                    height: 200,
+
+                    colorDark:
+                        "#0f172a",
+
+                    colorLight:
+                        "#ffffff",
+
+                    correctLevel:
+                        QRCode.CorrectLevel.M
+                }
+            );
         }
 
-        function showQR() { document.getElementById('modal-qr').classList.replace('hidden', 'flex'); }
-        function closeModal(id) { document.getElementById(id).classList.replace('flex', 'hidden'); }
-        function copyId() { navigator.clipboard.writeText(document.getElementById('my-peer-id').innerText); }
-        function clearLogs() { 
-            const list = document.getElementById('transfer-list');
-            list.innerHTML = `<div id="empty-hint" class="py-20 text-center border-2 border-dashed border-white/50 rounded-[40px] bg-white/20">
-                <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">No active transfers</p>
-            </div>`;
+
+        function showQR() {
+
+            const id =
+                $("my-peer-id")
+                    .innerText
+                    .trim();
+
+
+            if (
+                !id ||
+                id ===
+                "Initializing..."
+            ) {
+
+                return;
+            }
+
+
+            $("modal-qr")
+                .classList
+                .replace(
+                    "hidden",
+                    "flex"
+                );
         }
 
-        function openScan() {
-            document.getElementById('modal-scan').classList.replace('hidden', 'flex');
-            qrScanner = new Html5Qrcode("reader");
-            qrScanner.start({ facingMode: "environment" }, { fps: 24, qrbox: 250 }, (text) => {
-                document.getElementById('target-id').value = text;
-                closeScan();
-                startConnect();
-            }).catch(() => {});
+
+        function closeModal(id) {
+
+            $(id)
+                .classList
+                .replace(
+                    "flex",
+                    "hidden"
+                );
         }
 
-        function closeScan() {
-            if (qrScanner) {
-                qrScanner.stop().finally(() => {
-                    document.getElementById('modal-scan').classList.replace('flex', 'hidden');
-                    qrScanner = null;
-                });
-            } else {
-                document.getElementById('modal-scan').classList.replace('flex', 'hidden');
+
+        async function copyId() {
+
+            const id =
+                $("my-peer-id")
+                    .innerText
+                    .trim();
+
+
+            if (
+                !id ||
+                id ===
+                "Initializing..."
+            ) {
+                return;
+            }
+
+
+            try {
+
+                await navigator
+                    .clipboard
+                    .writeText(id);
+
+            } catch {
+
+                /*
+                 * Clipboard APIが使えない場合の
+                 * fallback。
+                 */
+                const textarea =
+                    document.createElement(
+                        "textarea"
+                    );
+
+                textarea.value =
+                    id;
+
+                textarea.style.position =
+                    "fixed";
+
+                textarea.style.opacity =
+                    "0";
+
+                document.body.appendChild(
+                    textarea
+                );
+
+                textarea.select();
+
+                document.execCommand(
+                    "copy"
+                );
+
+                textarea.remove();
             }
         }
 
-        const dz = document.getElementById('drop-zone');
-        dz.ondragover = e => { e.preventDefault(); if (activeConn?.open) dz.classList.add('active'); };
-        dz.ondragleave = () => dz.classList.remove('active');
-        dz.ondrop = e => { e.preventDefault(); dz.classList.remove('active'); if (activeConn?.open) sendFiles(e.dataTransfer.files); };
-        document.getElementById('file-input').onchange = e => sendFiles(e.target.files);
 
-        window.onload = loadUser;
+        /* ======================================================
+           CLEAR LOGS
+        ====================================================== */
+
+        function clearLogs() {
+
+            const list =
+                $("transfer-list");
+
+
+            list.innerHTML = `
+                <div
+                    id="empty-hint"
+                    class="py-20 text-center border-2 border-dashed border-white/50 rounded-[40px] bg-white/20"
+                >
+                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">
+                        No active transfers
+                    </p>
+                </div>
+            `;
+        }
+
+
+        /* ======================================================
+           QR SCANNER
+        ====================================================== */
+
+        async function openScan() {
+
+            $("modal-scan")
+                .classList
+                .replace(
+                    "hidden",
+                    "flex"
+                );
+
+
+            try {
+
+                qrScanner =
+                    new Html5Qrcode(
+                        "reader"
+                    );
+
+
+                await qrScanner.start(
+
+                    {
+                        facingMode:
+                            "environment"
+                    },
+
+                    {
+                        fps: 24,
+
+                        qrbox: 250
+                    },
+
+                    text => {
+
+                        $("target-id")
+                            .value =
+                            text;
+
+                        closeScan();
+
+                        /*
+                         * 少し待ってから接続。
+                         */
+                        setTimeout(
+                            () => {
+                                startConnect();
+                            },
+                            100
+                        );
+                    },
+
+                    () => {
+                        /*
+                         * QRが見つからないフレームの
+                         *エラーは無視。
+                         */
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "QR scanner error:",
+                    error
+                );
+
+                closeScan();
+
+                alert(
+                    "カメラを起動できませんでした。カメラの使用許可を確認してください。"
+                );
+            }
+        }
+
+
+        async function closeScan() {
+
+            if (qrScanner) {
+
+                const scanner =
+                    qrScanner;
+
+                qrScanner =
+                    null;
+
+                try {
+
+                    if (
+                        scanner.isScanning
+                    ) {
+
+                        await scanner.stop();
+                    }
+
+                } catch (error) {
+
+                    console.warn(
+                        "QR scanner stop:",
+                        error
+                    );
+                }
+
+
+                try {
+                    await scanner.clear();
+                } catch {}
+            }
+
+
+            $("modal-scan")
+                .classList
+                .replace(
+                    "flex",
+                    "hidden"
+                );
+        }
+
+
+        /* ======================================================
+           DRAG & DROP
+        ====================================================== */
+
+        const dz =
+            $("drop-zone");
+
+
+        dz.ondragover = event => {
+
+            event.preventDefault();
+
+            if (
+                activeConn &&
+                activeConn.open
+            ) {
+
+                dz.classList.add(
+                    "active"
+                );
+            }
+        };
+
+
+        dz.ondragleave = () => {
+
+            dz.classList.remove(
+                "active"
+            );
+        };
+
+
+        dz.ondrop = event => {
+
+            event.preventDefault();
+
+            dz.classList.remove(
+                "active"
+            );
+
+
+            if (
+                activeConn &&
+                activeConn.open
+            ) {
+
+                sendFiles(
+                    event
+                        .dataTransfer
+                        .files
+                );
+            }
+        };
+
+
+        $("file-input").onchange =
+            event => {
+
+                sendFiles(
+                    event.target.files
+                );
+            };
+
+
+        /* ======================================================
+           KEYBOARD
+        ====================================================== */
+
+        $("target-id").addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    startConnect();
+                }
+            }
+        );
+
+
+        /* ======================================================
+           INITIALIZATION
+        ====================================================== */
+
+        async function initialize() {
+
+            updateUserUI(
+                "Guest",
+                false
+            );
+
+
+            /*
+             * OAuth callbackを先に処理。
+             */
+            try {
+
+                const handled =
+                    await handleOAuthCallback();
+
+
+                if (handled) {
+
+                    console.log(
+                        "Noppo ID OAuth callback completed."
+                    );
+
+                    return;
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "OAuth callback error:",
+                    error
+                );
+
+                alert(
+                    error?.message ||
+                    "Noppo IDログインに失敗しました。"
+                );
+
+                /*
+                 * OAuth失敗時でもGuestとして
+                 * NoppoDTを利用できるようにする。
+                 */
+            }
+
+
+            /*
+             * 現在のタブにNoppo IDセッションが
+             *残っている場合は復元。
+             */
+            currentAccount =
+                restoreSession();
+
+
+            if (currentAccount) {
+
+                updateUserUI(
+                    currentAccount.username,
+                    true
+                );
+
+                await setupPeer(
+                    currentAccount.username
+                );
+
+            } else {
+
+                /*
+                 * Guest Peer。
+                 */
+                updateUserUI(
+                    "Guest",
+                    false
+                );
+
+                await setupPeer(
+                    null
+                );
+            }
+        }
+
+
+        /*
+         * ページ起動
+         */
+        window.addEventListener(
+            "load",
+            initialize
+        );
+
     </script>
+
 </body>
 </html>
